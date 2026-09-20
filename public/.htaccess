@@ -1,0 +1,50 @@
+# public/.htaccess
+# Apache mod_rewrite rules for the URL Shortener.
+#
+# Assumptions:
+#   - DocumentRoot (or VirtualHost root) points to public/
+#   - mod_rewrite is enabled (a2enmod rewrite / AllowOverride All)
+#
+# XAMPP note: edit xampp/apache/conf/httpd.conf and set
+#   AllowOverride All
+# for the htdocs directory if rewrite rules are not being picked up.
+
+Options -Indexes
+Options -MultiViews
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # ── 1. Skip real files and directories (CSS, JS, images, PHP files) ──
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # ── 2. Short-link redirector ──────────────────────────────────────────
+    # /s/{code}  →  redirect.php?code={code}
+    # The "s" prefix avoids clashing with top-level page routes (/, /dashboard, etc.)
+    RewriteRule ^s/([0-9A-Za-z]{6})/?$ redirect.php?code=$1 [L,QSA]
+
+    # ── 3. Page routes ───────────────────────────────────────────────────
+    RewriteRule ^login/?$ login.php [L,QSA]
+    RewriteRule ^register/?$ register.php [L,QSA]
+    RewriteRule ^logout/?$ logout.php [L,QSA]
+    RewriteRule ^dashboard/?$ dashboard.php [L,QSA]
+
+    # ── 4. Front controller — all other routes → index.php ───────────────
+    RewriteRule ^ index.php [L]
+</IfModule>
+
+# ── Security headers ──────────────────────────────────────────────────────
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set Referrer-Policy "no-referrer-when-downgrade"
+</IfModule>
+
+# ── Hide sensitive files ──────────────────────────────────────────────────
+<FilesMatch "\.(env|log|sql|json|lock|md)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
