@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-define('DB_HOST',    getenv('DB_HOST')    ?: 'localhost');
-define('DB_PORT',    getenv('DB_PORT')    ?: '3306');
-define('DB_NAME',    getenv('DB_NAME')    ?: 'url_shortener');
-define('DB_USER',    getenv('DB_USER')    ?: 'root');
-define('DB_PASS',    getenv('DB_PASS')    ?: '');
+define('DB_HOST',    getenv('DB_HOST')     ?: 'localhost');
+define('DB_PORT',    getenv('DB_PORT')     ?: '3306');
+define('DB_NAME',    getenv('DB_NAME')     ?: 'url_shortener');
+define('DB_USER',    getenv('DB_USER')     ?: 'root');
+define('DB_PASS',    getenv('DB_PASSWORD') ?: getenv('DB_PASS') ?: '');
 define('DB_CHARSET', 'utf8mb4');
 
 function getDbConnection(): PDO
@@ -33,11 +33,13 @@ function getDbConnection(): PDO
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
 
         // Disable emulated prepares so MySQL handles parameter binding natively.
-        // This prevents certain SQL-injection edge cases and improves type safety.
         PDO::ATTR_EMULATE_PREPARES   => false,
 
-        // Persistent connections are OFF by default; enable via env if you use
-        // a connection pool / long-running FPM workers that benefit from it.
+        // Enable SSL for cloud databases like Aiven
+        PDO::MYSQL_ATTR_SSL_CA       => true,
+        PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false,
+
+        // Persistent connections setting
         PDO::ATTR_PERSISTENT         => filter_var(
             getenv('DB_PERSISTENT') ?: 'false',
             FILTER_VALIDATE_BOOLEAN
@@ -54,7 +56,6 @@ function getDbConnection(): PDO
         // Log the full message server-side; expose a generic message to clients.
         error_log('[DB] Connection failed: ' . $e->getMessage());
 
-        // In production, swap this with a proper error page / JSON response.
         http_response_code(503);
         exit(json_encode([
             'success' => false,
