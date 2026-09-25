@@ -50,6 +50,8 @@ $totalLinks   = (int) ($initialStats['summary']['total_links'] ?? count($userUrl
 $activeLinks  = (int) ($initialStats['summary']['active_links'] ?? 0);
 $totalClicks  = (int) ($initialStats['summary']['overall_clicks'] ?? 0);
 $avgClicks    = $totalLinks > 0 ? round($totalClicks / $totalLinks, 1) : 0;
+
+$assetBase = file_exists(__DIR__ . '/assets/js/dashboard.js') ? 'assets' : '../assets';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -939,7 +941,7 @@ $avgClicks    = $totalLinks > 0 ? round($totalClicks / $totalLinks, 1) : 0;
             initial: <?= json_encode($initialStats, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?>,
         };
     </script>
-    <script src="assets/js/dashboard.js" defer></script>
+    <script src="<?= $assetBase ?>/js/dashboard.js" defer></script>
 </body>
 
 </html>
