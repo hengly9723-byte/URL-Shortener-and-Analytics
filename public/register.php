@@ -1,14 +1,6 @@
 <?php
 declare(strict_types=1);
 
-/**
- * public/register.php
- *
- * User registration page.
- * Redirects to the index or dashboard if already authenticated.
- * Submits via Fetch API to api/auth.php (action=register) or standard POST.
- */
-
 session_start();
 
 $projectRoot = dirname(__DIR__);

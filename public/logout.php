@@ -1,10 +1,4 @@
 <?php
-/**
- * public/logout.php
- *
- * Destroys user session and redirects to login page.
- * Supports both GET requests (e.g. standard link) and POST requests (e.g. form/Fetch).
- */
 
 declare(strict_types=1);
 

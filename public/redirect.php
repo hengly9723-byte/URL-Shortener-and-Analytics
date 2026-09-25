@@ -25,10 +25,7 @@
 
 declare(strict_types=1);
 
-// ---------------------------------------------------------------------------
-// Bootstrap — load config and services
-// ---------------------------------------------------------------------------
-$projectRoot = dirname(__DIR__);   // URL Shortener with Analytics/
+$projectRoot = dirname(__DIR__);
 
 require_once $projectRoot . '/config/db.php';
 require_once $projectRoot . '/src/Helpers/Shortener.php';
@@ -39,9 +36,7 @@ use App\Helpers\Shortener;
 use App\Helpers\GeoIp;
 use App\Services\ClickLogger;
 
-// ---------------------------------------------------------------------------
-// Helper: render an error view and exit
-// ---------------------------------------------------------------------------
+// render an error view and exit
 function renderError(int $httpCode, string $view, array $vars = []): never
 {
     http_response_code($httpCode);
@@ -60,20 +55,16 @@ function renderError(int $httpCode, string $view, array $vars = []): never
     exit;
 }
 
-// ---------------------------------------------------------------------------
 // 1. Extract & validate short code — fail fast before any DB call
-// ---------------------------------------------------------------------------
 $shortCode = trim((string) ($_GET['code'] ?? ''));
 
 if ($shortCode === '' || !Shortener::isValidCode($shortCode)) {
     renderError(404, 'link-not-found', ['shortCode' => $shortCode]);
 }
 
-// ---------------------------------------------------------------------------
 // 2. Look up the URL — single query, uses the unique index on short_code
 //    We intentionally do NOT filter on is_active or expiry here so we can
 //    return the correct error page (not-found vs. expired) to the user.
-// ---------------------------------------------------------------------------
 try {
     $pdo = getDbConnection();
 
@@ -92,23 +83,16 @@ try {
     exit('Service temporarily unavailable.');
 }
 
-// ---------------------------------------------------------------------------
 // 3. Existence check
-// ---------------------------------------------------------------------------
 if ($url === false || $url === null) {
     renderError(404, 'link-not-found', ['shortCode' => $shortCode]);
 }
 
-// ---------------------------------------------------------------------------
 // 4. Active check
-// ---------------------------------------------------------------------------
 if ((int) $url['is_active'] !== 1) {
     renderError(404, 'link-not-found', ['shortCode' => $shortCode]);
 }
-
-// ---------------------------------------------------------------------------
 // 5. Expiry check (PHP-side — avoids a second DB round-trip)
-// ---------------------------------------------------------------------------
 if ($url['expiry_date'] !== null) {
     $expiryTs = strtotime($url['expiry_date']);
     if ($expiryTs !== false && $expiryTs < time()) {
@@ -116,10 +100,8 @@ if ($url['expiry_date'] !== null) {
     }
 }
 
-// ---------------------------------------------------------------------------
 // 6. Collect analytics data BEFORE sending headers
-//    (header() calls must come before any output, country lookup happens here)
-// ---------------------------------------------------------------------------
+// (header() calls must come before any output, country lookup happens here)
 $urlId    = (int) $url['id'];
 $destUrl  = $url['original_url'];
 
@@ -133,9 +115,7 @@ $referrer  = ClickLogger::resolveReferrer();
 // swap GeoIp::getCountryCode() for a local MaxMind GeoLite2 lookup (< 1 ms).
 $country   = GeoIp::getCountryCode($ipAddress);
 
-// ---------------------------------------------------------------------------
 // 7. Send 302 redirect — client browser starts following immediately
-// ---------------------------------------------------------------------------
 
 // Validate the destination URL one more time to prevent open-redirect abuse
 // if someone somehow injected a javascript: or data: URL into the DB.
@@ -155,10 +135,8 @@ header('Referrer-Policy: no-referrer-when-downgrade');
 // The 302 redirect itself
 header('Location: ' . $destUrl, true, 302);
 
-// ---------------------------------------------------------------------------
-// 8. Flush response to client — user's browser starts loading $destUrl now.
-//    Everything below is invisible to the visitor.
-// ---------------------------------------------------------------------------
+// Flush response to client — user's browser starts loading $destUrl now.
+// Everything below is invisible to the visitor.
 
 // Close the output buffer and push bytes to the client.
 if (ob_get_level() > 0) {
@@ -172,10 +150,8 @@ if (function_exists('fastcgi_finish_request')) {
     fastcgi_finish_request();
 }
 
-// ---------------------------------------------------------------------------
 // 9. Log the click — runs AFTER the browser has already received the redirect.
-//    Total user-visible latency: DB lookup only (step 2).
-//    Country lookup + DB insert happen in the background.
-// ---------------------------------------------------------------------------
+// Total user-visible latency: DB lookup only (step 2).
+// Country lookup + DB insert happen in the background.
 $logger = new ClickLogger($pdo);
 $logger->log($urlId, $ipAddress, $userAgent, $referrer, $country);

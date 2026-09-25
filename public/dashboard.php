@@ -707,9 +707,7 @@ $avgClicks    = $totalLinks > 0 ? round($totalClicks / $totalLinks, 1) : 0;
 
     </main>
 
-    <!-- ══════════════════════════════════════════════════════
-         MODAL: Create New Link
-    ══════════════════════════════════════════════════════ -->
+    <!-- MODAL: Create New Link -->
     <div id="create-modal"
          class="fixed inset-0 z-50 flex items-center justify-center p-4
                 bg-slate-900/40 backdrop-blur-sm hidden">
@@ -771,9 +769,7 @@ $avgClicks    = $totalLinks > 0 ? round($totalClicks / $totalLinks, 1) : 0;
         </div>
     </div>
 
-    <!-- ══════════════════════════════════════════════════════
-         MODAL: Edit Link
-    ══════════════════════════════════════════════════════ -->
+    <!-- Edit Link -->
     <div id="edit-modal"
          class="fixed inset-0 z-50 flex items-center justify-center p-4
                 bg-slate-900/40 backdrop-blur-sm hidden">
@@ -841,9 +837,7 @@ $avgClicks    = $totalLinks > 0 ? round($totalClicks / $totalLinks, 1) : 0;
         </div>
     </div>
 
-    <!-- ══════════════════════════════════════════════════════
-         MODAL: Delete Confirmation
-    ══════════════════════════════════════════════════════ -->
+    <!-- Delete Confirmation -->
     <div id="delete-modal"
          class="fixed inset-0 z-50 flex items-center justify-center p-4
                 bg-slate-900/40 backdrop-blur-sm hidden">
@@ -880,9 +874,7 @@ $avgClicks    = $totalLinks > 0 ? round($totalClicks / $totalLinks, 1) : 0;
         </div>
     </div>
 
-    <!-- ══════════════════════════════════════════════════════
-         TOAST
-    ══════════════════════════════════════════════════════ -->
+    <!-- Toast -->
     <div id="dashboard-toast" role="status" aria-live="polite"
          class="fixed bottom-6 right-6 z-50 bg-slate-900 text-white text-[13px] font-medium
                 px-4 py-2.5 rounded-xl shadow-2xl flex items-center gap-2.5

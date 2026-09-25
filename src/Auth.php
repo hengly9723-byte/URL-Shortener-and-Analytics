@@ -1,20 +1,6 @@
 <?php
 declare(strict_types=1);
 
-/**
- * src/Auth.php
- *
- * Authentication service for the URL shortener.
- *
- * Responsibilities:
- *  - Register new users (bcrypt password hashing)
- *  - Login existing users (password_verify + session fixation protection)
- *  - Logout (session destroy)
- *  - Session convenience helpers (isLoggedIn, currentUser)
- *  - CSRF token generation and validation
- *  - Simple session-based rate limiting for login attempts
- */
-
 namespace App;
 
 use PDO;
