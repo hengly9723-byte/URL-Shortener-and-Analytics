@@ -51,7 +51,10 @@ $activeLinks  = (int) ($initialStats['summary']['active_links'] ?? 0);
 $totalClicks  = (int) ($initialStats['summary']['overall_clicks'] ?? 0);
 $avgClicks    = $totalLinks > 0 ? round($totalClicks / $totalLinks, 1) : 0;
 
-$assetBase = file_exists(__DIR__ . '/assets/js/dashboard.js') ? 'assets' : '../assets';
+// Calculate public root URL relative to the script
+$webRoot = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? ''), '/\\');
+// If running from public directory, go up one level for root-relative assets on localhost
+$assetPath = ($webRoot === '' || $webRoot === '/') ? '/assets' : $webRoot . '/../assets';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -941,7 +944,7 @@ $assetBase = file_exists(__DIR__ . '/assets/js/dashboard.js') ? 'assets' : '../a
             initial: <?= json_encode($initialStats, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?>,
         };
     </script>
-    <script src="<?= $assetBase ?>/js/dashboard.js" defer></script>
+    <script src="/assets/js/dashboard.js" defer></script>
 </body>
 
 </html>
