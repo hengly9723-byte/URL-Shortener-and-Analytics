@@ -901,6 +901,6 @@ $avgClicks    = $totalLinks > 0 ? round($totalClicks / $totalLinks, 1) : 0;
             initial:    <?= json_encode($initialStats, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?>,
         };
     </script>
-    <script src="../assets/js/dashboard.js" defer></script>
+    <script src="assets/js/dashboard.js" defer></script>
 </body>
 </html>
