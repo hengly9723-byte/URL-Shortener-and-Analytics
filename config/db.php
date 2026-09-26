@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-define('DB_HOST',    getenv('DB_HOST')     ?: 'localhost');
-define('DB_PORT',    getenv('DB_PORT')     ?: '3306');
-define('DB_NAME',    getenv('DB_NAME')     ?: 'url_shortener');
-define('DB_USER',    getenv('DB_USER')     ?: 'root');
-define('DB_PASS',    getenv('DB_PASSWORD') ?: getenv('DB_PASS') ?: '');
+define('DB_HOST',    trim((string)(getenv('DB_HOST')     ?: 'localhost')));
+define('DB_PORT',    trim((string)(getenv('DB_PORT')     ?: '3306')));
+define('DB_NAME',    trim((string)(getenv('DB_NAME')     ?: 'url_shortener')));
+define('DB_USER',    trim((string)(getenv('DB_USER')     ?: 'root')));
+define('DB_PASS',    trim((string)(getenv('DB_PASSWORD') ?: getenv('DB_PASS') ?: '')));
 define('DB_CHARSET', 'utf8mb4');
 
 function getDbConnection(): PDO

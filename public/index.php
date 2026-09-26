@@ -948,8 +948,7 @@ try {
             baseUrl: <?= json_encode($baseUrl, JSON_UNESCAPED_SLASHES) ?>,
         };
     </script>
-    <script src="../assets/js/main.js" defer></script>
-
+    <script src="<?= $baseUrl ?>/assets/js/main.js" defer></script>
 </body>
 
 </html>

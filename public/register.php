@@ -404,6 +404,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             csrf:    <?= json_encode($csrfToken) ?>,
         };
     </script>
-    <script src="../assets/js/register.js" defer></script>
+    <script src="<?= $baseUrl ?>/assets/js/register.js" defer></script>
 </body>
 </html>

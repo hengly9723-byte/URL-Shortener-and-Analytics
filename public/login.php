@@ -411,6 +411,6 @@ $registered = isset($_GET['registered']);
             redirectUrl: <?= json_encode($redirectUrl, JSON_UNESCAPED_SLASHES) ?>,
         };
     </script>
-    <script src="../assets/js/login.js" defer></script>
+    <script src="<?= $baseUrl ?>/assets/js/login.js" defer></script>
 </body>
 </html>
