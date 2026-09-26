@@ -26,20 +26,15 @@ function getDbConnection(): PDO
     );
 
     $options = [
-        // Throw PDOException on every error — never suppress failures silently.
         PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
 
-        // Return rows as associative arrays by default.
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
 
-        // Disable emulated prepares so MySQL handles parameter binding natively.
         PDO::ATTR_EMULATE_PREPARES   => false,
 
-        // Enable SSL for cloud databases like Aiven
         PDO::MYSQL_ATTR_SSL_CA       => true,
         PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false,
 
-        // Persistent connections setting
         PDO::ATTR_PERSISTENT         => filter_var(
             getenv('DB_PERSISTENT') ?: 'false',
             FILTER_VALIDATE_BOOLEAN
@@ -53,7 +48,6 @@ function getDbConnection(): PDO
     try {
         $pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
     } catch (PDOException $e) {
-        // Log the full message server-side; expose a generic message to clients.
         error_log('[DB] Connection failed: ' . $e->getMessage());
 
         http_response_code(503);
