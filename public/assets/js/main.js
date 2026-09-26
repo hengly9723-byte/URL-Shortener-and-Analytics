@@ -20,8 +20,11 @@
    CONSTANTS & DOM REFS
 ───────────────────────────────────────────────────────────────────────────── */
 
-/** API endpoint — set by PHP in window.SnapLink.apiUrl */
-const API_URL = (window.SnapLink && window.SnapLink.apiUrl) || '/api/shorten.php';
+/**
+ * API endpoint — kept relative so it resolves against whatever host/path the
+ * site is served from. Avoids scheme/host guesswork behind proxies (Render).
+ */
+const API_URL = 'api/shorten.php';
 
 // Form & inputs
 const form         = document.getElementById('shorten-form');

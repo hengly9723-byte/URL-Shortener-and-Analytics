@@ -32,7 +32,10 @@ $username = (string) Auth::currentUsername();
 $csrf     = Auth::csrfToken();
 
 // Compute base and API URLs
-$scheme  = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+$isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+    || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')
+    || (isset($_SERVER['HTTP_X_FORWARDED_SSL']) && $_SERVER['HTTP_X_FORWARDED_SSL'] === 'on');
+$scheme  = $isHttps ? 'https' : 'http';
 $host    = $_SERVER['HTTP_HOST'] ?? 'localhost';
 $base    = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? ''), '/\\');
 $baseUrl = $scheme . '://' . $host . $base;
